@@ -27,8 +27,14 @@ const supabaseAdmin = createClient(
 
 // Middleware
 app.use(helmet());
+
+// Configure CORS - support single URL or comma-separated list
+const clientUrls = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
+  : ['http://localhost:8000', 'http://localhost:8080'];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:8000',
+  origin: clientUrls,
   credentials: true
 }));
 app.use(express.json());
@@ -333,7 +339,9 @@ app.post('/api/submissions', async (req, res) => {
 
     const getBaseUrl = () => {
       if (process.env.CLIENT_URL) {
-        const url = new URL(process.env.CLIENT_URL);
+        // Use first URL if multiple are provided
+        const firstUrl = process.env.CLIENT_URL.split(',')[0].trim();
+        const url = new URL(firstUrl);
         return `${url.protocol}//${url.host}`;
       }
       const reqHost = req.get('host');
