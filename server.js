@@ -517,17 +517,58 @@ app.use('*', (req, res) => {
 // START SERVER
 // ==========================================
 
+// ==========================================
+// START SERVER
+// ==========================================
+
 async function startServer() {
   try {
+    // Show environment info
+    console.log('\n📋 Environment Variables:');
+    console.log(`   PORT: ${process.env.PORT || '3000 (default)'}`);
+    console.log(`   NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
+    console.log(`   CLIENT_URL: ${process.env.CLIENT_URL || 'NOT SET'}`);
+    console.log(`   SUPABASE_URL: ${process.env.SUPABASE_URL ? '✅ Set' : '❌ MISSING'}`);
+    console.log(`   SMTP_USER: ${process.env.SMTP_USER || 'Not set'}`);
+    console.log('');
+
     // Log all registered routes for debugging
-    console.log('\n🛣️  Registered routes:');
+    console.log('🛣️  Registered routes:');
+    let routeCount = 0;
     app._router.stack.forEach((middleware) => {
       if (middleware.route) {
         const methods = Object.keys(middleware.route.methods).join(', ').toUpperCase();
         console.log(`   ${methods} ${middleware.route.path}`);
+        routeCount++;
       }
     });
-    console.log('');
+    console.log(`   Total: ${routeCount} routes\n`);
+
+    // Test Supabase connection
+    const { error } = await supabaseAdmin.from('submissions').select('count');
+    if (error) {
+      console.error('❌ Supabase connection failed:', error.message);
+      console.log('💡 Make sure you ran the SQL schema in Supabase SQL Editor');
+    } else {
+      console.log('✅ Connected to Supabase successfully');
+    }
+
+    // Start server
+    app.listen(PORT, () => {
+      console.log('\n🚀 VYGC Backend Server is READY');
+      console.log(`   Port: ${PORT}`);
+      console.log(`   Public URL: https://verification-backend-66j0.onrender.com`);
+      console.log(`   CORS origins: ${process.env.CLIENT_URL || 'localhost only (default)'}`);
+      console.log(`   Email notifications: enabled`);
+      console.log('\n✨ Waiting for requests...\n');
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
+}
+    });
+    console.log(`   Total: ${routeCount} routes\n`);
 
     const { error } = await supabaseAdmin.from('submissions').select('count');
     if (error) {
@@ -539,16 +580,14 @@ async function startServer() {
 
     app.listen(PORT, () => {
       console.log(`\n🚀 VYGC Backend Server running on port ${PORT}`);
-      console.log(`📡 API Base URL: http://localhost:${PORT}/api`);
-      console.log(`🌐 Public URL: ${process.env.CLIENT_URL || 'Not set - CORS limited to localhost'}`);
+      console.log(`🌐 Public URL: https://verification-backend-66j0.onrender.com`);
+      console.log(`📡 API Base: https://verification-backend-66j0.onrender.com/api`);
+      console.log(`🔧 CORS origins: ${process.env.CLIENT_URL || 'Not set (localhost only)'}`);
       console.log(`📧 Email verification enabled`);
-      console.log(`\n💡 Don't forget to:`);
-      console.log(`   1. Setup Supabase tables (see comments in server.js)`);
-      console.log(`   2. Update .env with your Supabase keys and SMTP credentials`);
-      console.log(`   3. Set CLIENT_URL to your frontend URL\n`);
+      console.log(`\n✨ Server ready to accept requests\n`);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 }
