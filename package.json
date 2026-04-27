@@ -1,0 +1,33 @@
+{
+  "name": "vygc-verification",
+  "version": "1.0.0",
+  "description": "VYGC Verification System - Email Verified Submissions",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "verification",
+    "email",
+    "supabase",
+    "express"
+  ],
+  "author": "VYGC",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^1.0.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.15"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

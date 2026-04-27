@@ -1,0 +1,23 @@
+# Render Deployment Configuration for VYGC Backend
+# Place this file in the backend/ directory
+
+services:
+  - type: web
+    name: vygc-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: SUPABASE_URL
+        value: https://ptqvcyeiofzrlyygjsuv.supabase.co
+      - key: SUPABASE_ANON_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false  # Generate and set in Render dashboard
+      - key: CLIENT_URL
+        value: https://verification.vercel.app  # Change to your Vercel URL
+      - key: NODE_ENV
+        value: production
