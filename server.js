@@ -33,6 +33,8 @@ const clientUrls = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map(url => url.trim())
   : ['http://localhost:8000', 'http://localhost:8080'];
 
+console.log('🔧 CORS configured for origins:', clientUrls);
+
 app.use(cors({
   origin: clientUrls,
   credentials: true
