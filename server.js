@@ -519,6 +519,16 @@ app.use('*', (req, res) => {
 
 async function startServer() {
   try {
+    // Log all registered routes for debugging
+    console.log('\n🛣️  Registered routes:');
+    app._router.stack.forEach((middleware) => {
+      if (middleware.route) {
+        const methods = Object.keys(middleware.route.methods).join(', ').toUpperCase();
+        console.log(`   ${methods} ${middleware.route.path}`);
+      }
+    });
+    console.log('');
+
     const { error } = await supabaseAdmin.from('submissions').select('count');
     if (error) {
       console.error('❌ Supabase connection failed:', error.message);
@@ -529,7 +539,8 @@ async function startServer() {
 
     app.listen(PORT, () => {
       console.log(`\n🚀 VYGC Backend Server running on port ${PORT}`);
-      console.log(`📡 API: http://localhost:${PORT}/api`);
+      console.log(`📡 API Base URL: http://localhost:${PORT}/api`);
+      console.log(`🌐 Public URL: ${process.env.CLIENT_URL || 'Not set - CORS limited to localhost'}`);
       console.log(`📧 Email verification enabled`);
       console.log(`\n💡 Don't forget to:`);
       console.log(`   1. Setup Supabase tables (see comments in server.js)`);
